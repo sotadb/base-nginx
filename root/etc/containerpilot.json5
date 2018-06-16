@@ -3,7 +3,7 @@
 	jobs: [
 		{
 			name: "consul-agent",
-			exec: ["consul", "agent", "-config-dir=/etc/consul"]
+			exec: ["consul", "agent", "-config-dir=/etc/consul"],
 			restarts: "unlimited",
 			health: {
 		{
