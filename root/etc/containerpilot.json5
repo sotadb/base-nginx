@@ -4,22 +4,23 @@
 		{
 			name: "consul-agent",
 			exec: ["consul", "agent", "-config-dir=/etc/consul"],
-			restarts: "unlimited",
-			health: {
+			restarts: "unlimited"
+		},
 		{
 			name: "nginx-setup",
 			exec: ["/usr/bin/consul-template", "-once", "-template", "/etc/nginx/nginx.hcl:/etc/nginx/nginx.conf" ],
+			when: { source: "consul-agent", once: "healthy" }
 		},
 		{
 			name: "nginx",
 			port: 80,
-			exec: ["/usr/bin/nginx"],
+			exec: ["/usr/sbin/nginx"],
 			when: { source: "nginx-setup", once: "exitSuccess" },
 			health: { exec: ["/usr/bin/curl", "--fail", "-o", "/dev/null", "http://localhost/nginx-health"], interval: 5, ttl: 5, timeout: "4s" }
 		},
 		{
 			name: "onChange-consul",
-			exec: ["/usr/bin/consul-template", "-once", "-template", "/etc/nginx/nginx.hcl:/etc/nginx/nginx.conf:/usr/bin/nginx -s reload"],
+			exec: ["/usr/bin/consul-template", "-once", "-template", "/etc/nginx/nginx.hcl:/etc/nginx/nginx.conf:/usr/sbin/nginx -s reload"],
 			when: { source: "watch.consul", each: "changed" }
 		},
 		{
