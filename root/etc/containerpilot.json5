@@ -21,7 +21,7 @@
 		},
 		{
 			name: "onChange-consul",
-			exec: ["/usr/bin/consul-template", "-once", "-template", "/etc/nginx/nginx.hcl:/etc/nginx/nginx.conf:/usr/sbin/nginx -s reload"],
+			exec: ["/usr/bin/consul-template", "-once", "-template", "/etc/nginx/nginx.hcl:/etc/nginx/nginx.conf"],
 			when: { source: "watch.consul", each: "changed" }
 		},
 		{
