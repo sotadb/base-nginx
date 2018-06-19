@@ -22,13 +22,6 @@ http {
 
         include /etc/nginx/mime.types;
 
-	{{if service "consul"}}
-	upstream consul-servers {
-		{{range service "consul"}}server {{.Address}}:{{.Port}};
-		{{end}}
-	}
-	{{end}}
-
 	server {
 		listen	80 default_server;
 
@@ -45,7 +38,7 @@ http {
 		# Proxy the console server's UI
 		{{if service "consul"}}
 		location /consul-status{
-			proxy_pass http://consul-servers/ui/;
+			proxy_pass http://127.0.0.1:8500/ui;
 		}
 		{{end}}
 
