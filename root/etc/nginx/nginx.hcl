@@ -24,7 +24,8 @@ http {
 
 	{{if service "consul"}}
 	upstream consul-servers {
-		{{range service "consul"}}server {{.Address}}:{{.Port}};{{end}}
+		{{range service "consul"}}server {{.Address}}:{{.Port}};
+		{{end}}
 	}
 	{{end}}
 
@@ -44,7 +45,7 @@ http {
 		# Proxy the console server's UI
 		{{if service "consul"}}
 		location /consul-status{
-			proxy_pass http://consul-servers/ui
+			proxy_pass http://consul-servers/ui/;
 		}
 		{{end}}
 

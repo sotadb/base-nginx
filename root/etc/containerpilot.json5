@@ -4,7 +4,7 @@
 		{
 			name: "consul-agent",
 			exec: ["consul", "agent", "-config-dir=/etc/consul"],
-			health: { exec: "consul info | grep leader", interval: 5, ttl: 5, timeout: "4s" },
+			health: { exec: "consul info | awk 'BEGIN {rv=1}; (2 < $3)&&(/known_servers/) {rv=0}; END{exit rv}'", interval: 5, ttl: 5, timeout: "4s" },
 			restarts: "unlimited"
 		},
 		{
