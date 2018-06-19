@@ -4,6 +4,7 @@
 		{
 			name: "consul-agent",
 			exec: ["consul", "agent", "-config-dir=/etc/consul"],
+			health: { exec: "consul info | grep leader" },
 			restarts: "unlimited"
 		},
 		{

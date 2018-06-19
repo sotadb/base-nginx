@@ -1,6 +1,6 @@
 user nginx;
 worker_processes 4;
-pid /run/nginx.pid;
+pid /var/run/nginx.pid;
 
 events {
 	worker_connections 768;
@@ -22,6 +22,12 @@ http {
 
         include /etc/nginx/mime.types;
 
+	{{if service "consul"}}
+	upstream consul-servers {
+		{{range service "consul"}}server {{.Address}}:{{.Port}};{{end}}
+	}
+	{{end}}
+
 	server {
 		listen	80 default_server;
 
@@ -37,11 +43,6 @@ http {
 
 		# Proxy the console server's UI
 		{{if service "consul"}}
-		upstream consul-servers {
-			{{range service "consul"}}
-			 server {{.Address}}:{{.Port}};
-			{{end}}
-		}
 		location /consul-status{
 			proxy_pass http://consul-servers/ui
 		}
