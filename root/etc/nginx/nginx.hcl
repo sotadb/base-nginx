@@ -40,8 +40,9 @@ http {
 		location /consul-status{
 			proxy_pass http://127.0.0.1:8500/ui;
 		}
-		location /vi/{
-			proxy_pass http:/127.0.0.1:8500/v1/;
+
+		location /v1{
+			proxy_pass http://127.0.0.1:8500/v1;
 		}
 		{{end}}
 
