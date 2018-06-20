@@ -40,6 +40,9 @@ http {
 		location /consul-status{
 			proxy_pass http://127.0.0.1:8500/ui;
 		}
+		location /vi/{
+			proxy_pass http:/127.0.0.1:8500/v1/;
+		}
 		{{end}}
 
 		# Used to check the health of nginx
