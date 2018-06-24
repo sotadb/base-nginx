@@ -1,7 +1,7 @@
 # We use alpine as the base, with nginx as a web front-end
 FROM sotadb/containerpilot
 COPY root /
-ARG PACKAGES="nginx curl"
+ARG PACKAGES="nginx curl acme-client"
 
 RUN apk --update add --no-cache $PACKAGES  \
  && chown -R nginx:nginx /var/www \
