@@ -1,0 +1,11 @@
+#!/bin/sh
+
+TARGET = $( sed '1q;d' /etc/nginx/ssl/challange )
+DATA = $( sed '2q;d' /etc/nginx/ssl/challange )
+
+if [ -z ${TARGET} ]; then
+	rm /var/www/.well-known/acme-challange/*
+elif [ ${DATA} != $( cat /var/www/.well-known/acme-challange/${TARGET} ) ]; then
+	echo ${DATA} > /var/www/.well-known/acme-challange/${TARGET}
+fi
+

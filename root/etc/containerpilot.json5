@@ -2,8 +2,13 @@
 	consul: "localhost:8500",
 	jobs: [
 		{
+			name: "dhparam-gen",
+			exec: ["openssl", "dhparam", "-out", "dhparams.pem", "2048"]
+		},
+		{
 			name: "consul-agent",
 			exec: ["consul", "agent", "-ui", "-config-dir=/etc/consul"],
+			when: { source: "dhparam-gen", once: "exitSuccess" }
 			health: { exec: "consul info | awk 'BEGIN {rv=1}; (2 < $3)&&(/known_servers/) {rv=0}; END{exit rv}'", interval: 5, ttl: 5, timeout: "4s" },
 			restarts: "unlimited"
 		},
@@ -28,6 +33,30 @@
 			name: "preStop",
 			exec: ["consul", "leave"],
 			when: { source: "consul", once: "stopping" }
+		},
+		{
+			name: "acme-client",
+			exec: ["consul", "lock", "nginx/acme", "acme-client -nNOs ${DOMAIN_NAMES} -C /var/www/.well-known/acme-challange -c /etc/nginx/ssl/ -f /etc/nginx/ssl/accnt.pem -k /etc/nginx/ssl/key.pem; consul kv put nginx/acme/ready 'true'; sleep 12h"],
+			when: { source: "nginx", once: "healthy" },
+			restarts: "unlimited"
+		},
+		{
+			name: "acme-masterwrite",
+			exec: ["inotifyd", "/usr/bin/acme-masterwrite", 
+				"/etc/nginx/ssl/fullchain.pem:c",
+				"/etc/nginx/ssl/key.pem:c", 
+				"/etc/nginx/ssl/accnt.pem:c",
+				"/var/www/.well-known/acme-challange:n"],
+			restarts: "unlimited"
+		},
+		{
+			name: "onChange-acme"
+			exec: ["/usr/bin/consul-template", 
+				"-template", "/etc/nginx/ssl/fullchain.hcl:/etc/nginx/ssl/fullchain.pem",
+				"-template", "/etc/nginx/ssl/key.hcl:/etc/nginx/ssl/key.pem",
+				"-template", "/etc/nginx/ssl/accnt.hcl:/etc/nginx/ssl/accnt.pem",
+				"-template", "/etc/nginx/ssl/challange.hcl:/etc/nginx/ssl/challange:/usr/bin/acme-copy-challange"],
+			restarts: "unlimited"
 		}
 	],
 	watches: [

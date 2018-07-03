@@ -1,0 +1,27 @@
+#!/bin/sh
+
+case $# in
+	2)
+		if [ $(cat $2) != $(consul kv get nginx/acme/$(basename $2)) ]; then
+			consul kv put nginx/acme/$(basename $2)
+		fi
+	;;
+	3)
+		case $1 in
+			n)
+				if [ $(cat $2/$3) != $(consul kv get nginx/acme/$(basename $2)) ]; then
+					consul kv put nginx/acme/$(basename $2) @$2/$3
+					consul kv put nginx/acme/$(basename $2)-name $3
+				fi
+			;;
+			d)
+				consul kv delete nginx/acme$(basename $2)
+				consul kv delete nginx/acme$(basename $2)-name
+			;;
+			*)
+				echo "this is designed to be run from inotifyd, do not run it manually"
+		esac
+	;;
+	*)
+		echo "this is designed to be run from inotifyd, do not run it manually"
+esac
