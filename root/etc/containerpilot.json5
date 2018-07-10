@@ -2,8 +2,8 @@
 	consul: "localhost:8500",
 	jobs: [
 		{
-			name: "dhparam-gen",
-			exec: ["openssl", "dhparam", "-out", "dhparams.pem", "2048"]
+			name: "ContainerInit",
+			exec: "openssl dhparam -out dhparams.pem 2048; update-domains"
 		},
 		{
 			name: "consul-agent",
@@ -11,6 +11,11 @@
 			when: { source: "dhparam-gen", once: "exitSuccess" }
 			health: { exec: "consul info | awk 'BEGIN {rv=1}; (2 < $3)&&(/known_servers/) {rv=0}; END{exit rv}'", interval: 5, ttl: 5, timeout: "4s" },
 			restarts: "unlimited"
+		},
+		{
+			name: "preStop",
+			exec: ["consul", "leave"],
+			when: { source: "consul", once: "stopping" }
 		},
 		{
 			name: "nginx-setup",
@@ -25,18 +30,14 @@
 			health: { exec: ["/usr/bin/curl", "--fail", "-o", "/dev/null", "http://localhost/nginx-health"], interval: 5, ttl: 5, timeout: "4s" }
 		},
 		{
-			name: "onChange-consul",
-			exec: ["/usr/bin/consul-template", "-once", "-template", "/etc/nginx/nginx.hcl:/etc/nginx/nginx.conf"],
-			when: { source: "watch.consul", each: "changed" }
-		},
-		{
-			name: "preStop",
-			exec: ["consul", "leave"],
-			when: { source: "consul", once: "stopping" }
+			name: "nginx-ssl",
+			port: 443,
+			when: { source: "nginx", once: "healthy" },
+			health: { exec: ["/usr/bin/curl", "--fail", "-o", "/dev/null", "https://localhost/nginx-health"], interval: 5, ttl: 5, timeout: "4s" }
 		},
 		{
 			name: "acme-client",
-			exec: ["consul", "lock", "nginx/acme", "acme-client -nNOs ${DOMAIN_NAMES} -C /var/www/.well-known/acme-challange -c /etc/nginx/ssl/ -f /etc/nginx/ssl/accnt.pem -k /etc/nginx/ssl/key.pem; consul kv put nginx/acme/ready 'true'; sleep 12h"],
+			exec: ["consul", "lock", "nginx/acme", "echo $$ > /var/run/acme-client.pid; acme-client -nNOs -C /var/www/.well-known/acme-challange -c /etc/nginx/ssl/ -f /etc/nginx/ssl/accnt.pem -k /etc/nginx/ssl/key.pem {{.DOMAIN_NAMES}}; consul kv put nginx/acme/ready 'true'; sleep 12h"],
 			when: { source: "nginx", once: "healthy" },
 			restarts: "unlimited"
 		},
@@ -50,16 +51,19 @@
 			restarts: "unlimited"
 		},
 		{
-			name: "onChange-acme"
+			name: "onChange-Domains",
+			exec: ["consul", "watch", "-type=key", "-key=nginx/DOMAIN_NAMES", "update-domains"],
+			restarts: "unlimited"
+		},
+		{
+			name: "onChange",
 			exec: ["/usr/bin/consul-template", 
-				"-template", "/etc/nginx/ssl/fullchain.hcl:/etc/nginx/ssl/fullchain.pem",
-				"-template", "/etc/nginx/ssl/key.hcl:/etc/nginx/ssl/key.pem",
+				"-template", "/etc/nginx/nginx.hcl:/etc/nginx/nginx.conf:/usr/sbin/nginx -s reload",
+				"-template", "/etc/nginx/ssl/fullchain.hcl:/etc/nginx/ssl/fullchain.pem:/usr/sbin/nginx -s reload",
+				"-template", "/etc/nginx/ssl/key.hcl:/etc/nginx/ssl/key.pem:/usr/sbin/nginx -s reload",
 				"-template", "/etc/nginx/ssl/accnt.hcl:/etc/nginx/ssl/accnt.pem",
 				"-template", "/etc/nginx/ssl/challange.hcl:/etc/nginx/ssl/challange:/usr/bin/acme-copy-challange"],
 			restarts: "unlimited"
 		}
-	],
-	watches: [
-		{ name: "consul", interval: 3 }
 	]
 }
