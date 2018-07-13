@@ -54,6 +54,7 @@
 		{
 			name: "onChange-Domains",
 			exec: ["consul", "watch", "-type=key", "-key=nginx/DOMAIN_NAMES", "update-domains"],
+			when: { source: "consul-agent", once: "healthy" },
 			restarts: "unlimited"
 		},
 		{
