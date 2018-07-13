@@ -2,20 +2,24 @@
 	consul: "localhost:8500",
 	jobs: [
 		{
-			name: "ContainerInit",
-			exec: "openssl dhparam -out /etc/nginx/ssl/dhparams.pem 2048; update-domains"
+			name: "dhparam-init",
+			exec: ["openssl", "dhparam", "-out", "/etc/nginx/ssl/dhparams.pem", "2048"]
+		},
+		{	name: "domains-init",
+			when: { source: "dhparam-init", once: "exitSuccess" },
+			exec: ["update-domains"]
 		},
 		{
 			name: "consul-agent",
 			exec: ["consul", "agent", "-ui", "-config-dir=/etc/consul"],
-			when: { source: "dhparam-gen", once: "exitSuccess" },
+			when: { source: "domains-init", once: "exitSuccess" },
 			health: { exec: "consul info | awk 'BEGIN {rv=1}; (2 < $3)&&(/known_servers/) {rv=0}; END{exit rv}'", interval: 5, ttl: 5, timeout: "4s" },
 			restarts: "unlimited"
 		},
 		{
 			name: "preStop",
 			exec: ["consul", "leave"],
-			when: { source: "consul", once: "stopping" }
+			when: { source: "consul-agent", once: "stopping" }
 		},
 		{
 			name: "nginx-setup",
