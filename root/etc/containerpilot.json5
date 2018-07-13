@@ -3,7 +3,7 @@
 	jobs: [
 		{
 			name: "ContainerInit",
-			exec: "openssl dhparam -out dhparams.pem 2048; update-domains"
+			exec: "openssl dhparam -out /etc/nginx/ssl/dhparams.pem 2048; update-domains"
 		},
 		{
 			name: "consul-agent",
@@ -48,6 +48,7 @@
 				"/etc/nginx/ssl/key.pem:c", 
 				"/etc/nginx/ssl/accnt.pem:c",
 				"/var/www/.well-known/acme-challange:n"],
+			when: { source: "onChange", once: "healthy" },
 			restarts: "unlimited"
 		},
 		{
@@ -63,6 +64,10 @@
 				"-template", "/etc/nginx/ssl/key.hcl:/etc/nginx/ssl/key.pem:/usr/sbin/nginx -s reload",
 				"-template", "/etc/nginx/ssl/accnt.hcl:/etc/nginx/ssl/accnt.pem",
 				"-template", "/etc/nginx/ssl/challange.hcl:/etc/nginx/ssl/challange:/usr/bin/acme-copy-challange"],
+			when: { source: "nginx", once: "healthy" },
+			health: { 
+				exec: "ls /etc/nginx/nginx.conf /etc/nginx/ssl/fullchain.pem /etc/nginx/ssl/key.pem /etc/nginx/ssl/accnt.pem /etc/nginx/ssl/challange &>/dev/null",
+				interval: 5, ttl: 5, timeout: "4s" },
 			restarts: "unlimited"
 		}
 	]

@@ -35,7 +35,7 @@ http {
 		charset     utf-8;
 		client_max_body_size 75M;
 
-		{{ if key nginx/acme/ready eq "true" }}
+		{{ if key "nginx/acme/ready" eq "true" }}
 		return 301 https://$host$request_uri;
 		{{ end }}
 
