@@ -13,7 +13,7 @@ if [ "${NEW_NAMES}" != "${DOMAIN_NAMES}" ]; then
 	echo DOMAIN_NAMES = ${DOMAIN_NAMES}
 	echo NEW_NAMES = ${NEW_NAMES}
 	echo Updating env variable DOMAIN_NAMES...
-	containerpilot -putenv DOMAIN_NAMES=${NEW_NAMES}
+	containerpilot -putenv "DOMAIN_NAMES=${NEW_NAMES}"
 	if [ -e /var/run/acme-client.pid ]; then
 		kill $( cat /var/run/acme-client.pid)
 	fi
