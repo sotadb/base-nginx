@@ -3,11 +3,11 @@
 CONSUL_NAMES=$( consul kv get nginx/DOMAIN_NAMES 2>/dev/null )
 NEW_NAMES=$( echo ${CONSUL_NAMES} ${DOMAIN_NAMES} | awk '{line=""; for (i=1; i<=NF; i++) {if (line !~ $i) { line=line $i " "}}; print line}' )
 
-if [ ${NEW_NAMES} != ${CONSUL_NAMES} ]; then
+if [ "${NEW_NAMES}" != "${CONSUL_NAMES}" ]; then
 	consul kv put nginx/DOMAIN_NAMES ${NEW_NAMES}
 	containerpilot -putenv DOMAIN_NAMES=${NEW_NAMES}
 fi
-if [ ${NEW_NAMES} != ${DOMAIN_NAMES} ]; then
+if [ "${NEW_NAMES}" != "${DOMAIN_NAMES}" ]; then
 	containerpilot -putenv DOMAIN_NAMES=${NEW_NAMES}
 	if [ -e /var/run/acme-client.pid ]; then
 		kill $( cat /var/run/acme-client.pid)
