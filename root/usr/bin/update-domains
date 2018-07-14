@@ -1,7 +1,7 @@
 #!/bin/sh
 
-CONSUL_NAMES = $( consul kv get nginx/DOMAIN_NAMES 2>/dev/null )
-NEW_NAMES = $( echo ${CONSUL_NAMES} ${DOMAIN_NAMES} | awk '{line=""; for (i=1; i<=NF; i++) {if (line !~ $i) { line=line $i " "}}; print line}' )
+CONSUL_NAMES=$( consul kv get nginx/DOMAIN_NAMES 2>/dev/null )
+NEW_NAMES=$( echo ${CONSUL_NAMES} ${DOMAIN_NAMES} | awk '{line=""; for (i=1; i<=NF; i++) {if (line !~ $i) { line=line $i " "}}; print line}' )
 
 if [ ${NEW_NAMES} != ${CONSUL_NAMES} ]; then
 	consul kv put nginx/DOMAIN_NAMES ${NEW_NAMES}
