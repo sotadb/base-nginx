@@ -7,7 +7,7 @@ if [ "${NEW_NAMES}" != "${CONSUL_NAMES}" ]; then
 	echo CONSUL_NAMES = ${CONSUL_NAMES}
 	echo NEW_NAMES = ${NEW_NAMES}
 	echo Updating DOMAIN_NAMES in consul...
-	consul kv put nginx/DOMAIN_NAMES ${NEW_NAMES}
+	consul kv put nginx/DOMAIN_NAMES "${NEW_NAMES}"
 fi
 if [ "${NEW_NAMES}" != "${DOMAIN_NAMES}" ]; then
 	echo DOMAIN_NAMES = ${DOMAIN_NAMES}
