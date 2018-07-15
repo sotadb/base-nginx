@@ -1,0 +1,9 @@
+#!/bin/sh
+
+dhparams=$( consul kv nginx/dhparams )
+if [ -z "${dhparams}" ]; then
+	echo ${dhparams} > /etc/nginx/ssl/dhparams.pem
+else
+	openssl dhparam -out /etc/nginx/ssl/dhparams.pem 2048
+	consul kv put nginx/dhparams @/etc/nginx/ssl/dhparams.pem
+fi
