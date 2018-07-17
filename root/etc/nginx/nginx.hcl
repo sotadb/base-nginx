@@ -35,7 +35,7 @@ http {
 		charset     utf-8;
 		client_max_body_size 75M;
 
-		{{ if key "nginx/acme/ready" eq "true" }}
+		{{ if key "nginx/acme/ready" | parseBool }}
 		return 301 https://$host$request_uri;
 		{{ end }}
 
@@ -44,7 +44,7 @@ http {
 		}
 	}
 
-{{ if key "nginx/acme/ready" eq "true" }}
+{{ if key "nginx/acme/ready" | parseBool  }}
 	server {
 		listen 443 ssl;
 		ssl_certificate /etc/nginx/ssl/fullcert.pem;
