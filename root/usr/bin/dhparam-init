@@ -1,6 +1,6 @@
 #!/bin/sh
 
-dhparams=$( consul kv nginx/dhparams )
+dhparams=$( consul kv get nginx/dhparams )
 if [ -n "${dhparams}" ]; then
 	echo ${dhparams} > /etc/nginx/ssl/dhparams.pem
 else
