@@ -15,7 +15,7 @@
 		{
 			name: "dhparam-init",
 			when: { source: "consul-agent", once: "healthy" },
-			exec: ["dhparam-init"]
+			exec: ["consul", "lock", "nginx/dhparam", "dhparam-init"]
 		},
 		{	name: "domains-init",
 			when: { source: "consul-agent", once: "healthy" },

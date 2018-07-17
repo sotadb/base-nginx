@@ -44,7 +44,7 @@ http {
 		}
 	}
 
-{{ if key nginx/acme/ready eq "true" }}
+{{ if key "nginx/acme/ready" eq "true" }}
 	server {
 		listen 443 ssl;
 		ssl_certificate /etc/nginx/ssl/fullcert.pem;
