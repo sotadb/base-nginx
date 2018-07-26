@@ -1,1 +1,1 @@
-{{if key "nginx/fullchain.pem"}}{{key "nginx/fullchain.pem"}}{{end}}
+{{if keyExists "nginx/fullchain.pem"}}{{key "nginx/fullchain.pem"}}{{end}}

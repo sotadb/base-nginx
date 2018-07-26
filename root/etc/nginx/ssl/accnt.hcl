@@ -1,1 +1,1 @@
-{{if key "nginx/accnt.pem"}}{{key "nginx/accnt.pem"}}{{end}}
+{{if keyExists "nginx/accnt.pem"}}{{key "nginx/accnt.pem"}}{{end}}
