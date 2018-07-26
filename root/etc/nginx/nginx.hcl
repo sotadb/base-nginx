@@ -37,13 +37,13 @@ http {
 
 		{{ if keyOrDefault "nginx/acme/ready" "false" | parseBool }}
 		return 301 https://$host$request_uri;
-		{{ else }}
+		{{ end }}
+		
 		location /nginx-health {
 			stub_status;
 			allow 127.0.0.1;
 			deny all;
 		}
-		{{ end }}
 
 		location /.well-known/acme-challenge {
 			root /var/www/.well-known/acme-challange;
