@@ -69,7 +69,7 @@ http {
 		add_header X-Frame-Options "DENY"; 
 		add_header X-XSS-Protection "1; mode=block"; 
 		add_header X-Content-Type-Options "nosniff"; 
-		add_header Content-Security-Policy "default-src 'self'; img-src 'self'; script-src 'self'; font-src 'self'; style-src 'self'; child-src 'self';
+		add_header Content-Security-Policy "default-src 'self'; img-src 'self'; script-src 'self'; font-src 'self'; style-src 'self'; child-src 'self'";
 
 		keepalive_timeout 80s; 
 		server_name localhost; 
