@@ -33,12 +33,12 @@
 			when: { source: "nginx-setup", once: "exitSuccess" },
 			health: { exec: ["/usr/bin/curl", "--fail", "-o", "/dev/null", "http://localhost/nginx-health"], interval: 5, ttl: 5, timeout: "4s" }
 		},
-		{
+/*		{
 			name: "nginx-ssl",
 			port: 443,
 			when: { source: "nginx", once: "healthy" },
-			#health: { exec: ["/usr/bin/curl", "--fail", "-o", "/dev/null", "https://localhost/nginx-health"], interval: 5, ttl: 5, timeout: "4s" }
-		},
+			health: { exec: ["/usr/bin/curl", "--fail", "-o", "/dev/null", "https://localhost/nginx-health"], interval: 5, ttl: 5, timeout: "4s" }
+		}, */
 		{
 			name: "acme-client",
 			exec: ["consul", "lock", "nginx/acme", "echo $$ > /var/run/acme-client.pid; acme-client -nNOs -C /var/www/.well-known/acme-challange -c /etc/nginx/ssl/ -f /etc/nginx/ssl/accnt.pem -k /etc/nginx/ssl/key.pem {{.DOMAIN_NAMES}}; consul kv put nginx/acme/ready 'true'; sleep 12h"],
