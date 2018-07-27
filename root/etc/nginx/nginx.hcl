@@ -91,5 +91,6 @@ http {
 			allow 127.0.0.1;
 			deny all;
 		}
+	}
 {{end}}
 }
