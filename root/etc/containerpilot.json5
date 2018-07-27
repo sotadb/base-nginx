@@ -71,7 +71,7 @@
 				"-template", "/etc/nginx/ssl/challange.hcl:/etc/nginx/ssl/challange:/usr/bin/acme-copy-challange"],
 			when: { source: "nginx", once: "healthy" },
 			health: { 
-				exec: "ls /etc/nginx/nginx.conf /etc/nginx/ssl/fullchain.pem /etc/nginx/ssl/key.pem /etc/nginx/ssl/accnt.pem /etc/nginx/ssl/challange &>/dev/null",
+				exec: "ls /etc/nginx/nginx.conf /etc/nginx/ssl/fullchain.pem /etc/nginx/ssl/key.pem /etc/nginx/ssl/accnt.pem /etc/nginx/ssl/challange > /dev/null 2>&1",
 				interval: 5, ttl: 5, timeout: "4s" },
 			restarts: "unlimited"
 		}
