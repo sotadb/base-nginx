@@ -50,7 +50,7 @@ case $1 in
 	;;
 	client)
 		echo $$ > /var/run/acme-client.pid
-		acme-client -nNOs -C /var/www/.well-known/acme-challange -c /etc/nginx/ssl/ -f /etc/nginx/ssl/accnt.pem -k /etc/nginx/ssl/key.pem {{.DOMAIN_NAMES}}
+		acme-client -nNOs -C /var/www/.well-known/acme-challange -c /etc/nginx/ssl/ -f /etc/nginx/ssl/accnt.pem -k /etc/nginx/ssl/key.pem ${DOMAIN_NAMES}
 		consul kv put nginx/acme/ready 'true'
 		sleep 13h
 	;;
