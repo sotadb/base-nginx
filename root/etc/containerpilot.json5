@@ -41,17 +41,13 @@
 		}, */
 		{
 			name: "acme-client",
-			exec: ["consul", "lock", "nginx/acme", "echo $$ > /var/run/acme-client.pid; acme-client -nNOs -C /var/www/.well-known/acme-challange -c /etc/nginx/ssl/ -f /etc/nginx/ssl/accnt.pem -k /etc/nginx/ssl/key.pem {{.DOMAIN_NAMES}} && consul kv put nginx/acme/ready 'true'; sleep 13h"],
+			exec: ["consul", "lock", "nginx/acme", "/usr/bin/acme-manage client"],
 			when: { source: "nginx", once: "healthy" },
 			restarts: "unlimited"
 		},
 		{
 			name: "acme-masterwrite",
-			exec: ["inotifyd", "/usr/bin/acme-masterwrite", 
-				"/etc/nginx/ssl/fullchain.pem:c",
-				"/etc/nginx/ssl/key.pem:c", 
-				"/etc/nginx/ssl/accnt.pem:c",
-				"/var/www/.well-known/acme-challange:n"],
+			exec: ["/usr/bin/acme-manage", "monitor"],
 			when: { source: "onChange", once: "healthy" },
 			restarts: "unlimited"
 		},
@@ -68,12 +64,10 @@
 				"-template", "/etc/nginx/ssl/fullchain.hcl:/etc/nginx/ssl/fullchain.pem:/usr/sbin/nginx -s reload",
 				"-template", "/etc/nginx/ssl/key.hcl:/etc/nginx/ssl/key.pem:/usr/sbin/nginx -s reload",
 				"-template", "/etc/nginx/ssl/accnt.hcl:/etc/nginx/ssl/accnt.pem",
-				"-template", "/etc/nginx/ssl/challange.hcl:/etc/nginx/ssl/challange:/usr/bin/acme-copy-challange"],
+				"-template", "/etc/nginx/ssl/challange.hcl:/etc/nginx/ssl/challange:/usr/bin/acme-manage copy"],
 			when: { source: "nginx", once: "healthy" },
-			health: { 
-				exec: "ls /etc/nginx/nginx.conf /etc/nginx/ssl/fullchain.pem /etc/nginx/ssl/key.pem /etc/nginx/ssl/accnt.pem /etc/nginx/ssl/challange > /dev/null 2>&1",
-				interval: 5, ttl: 5, timeout: "4s" },
-			restarts: "unlimited"
+			health: { exec: "acme-manage health", interval: 5, ttl: 5, timeout: "4s" },
+			 restarts: "unlimited"
 		}
 	]
 }

@@ -1,0 +1,61 @@
+#!/bin/sh
+
+process_inotifyd() {
+	case $# in
+		2)
+			if [ $(cat $2) != $(consul kv get nginx/acme/$(basename $2)) ]; then
+				consul kv put nginx/acme/$(basename $2)
+			fi
+		;;
+		3)
+			case $1 in
+				n)
+					if [ $(cat $2/$3) != $(consul kv get nginx/acme/$(basename $2)) ]; then
+						consul kv put nginx/acme/$(basename $2) @$2/$3
+						consul kv put nginx/acme/$(basename $2)-name $3
+					fi
+				;;
+				d)
+					consul kv delete nginx/acme$(basename $2)
+					consul kv delete nginx/acme$(basename $2)-name
+				;;
+				*)
+					echo "unknown operation from inotifyd"
+				;;
+			esac
+		;;
+		*)
+			echo "invalid number of options for process_inotifyd()"
+		;;
+	esac
+}
+
+case $1 in
+
+	copy)
+		TARGET = $( sed '1q;d' /etc/nginx/ssl/challange )
+		DATA = $( sed '2q;d' /etc/nginx/ssl/challange )
+		if [ -z ${TARGET} ]; then
+			rm /var/www/.well-known/acme-challange/*
+		elif [ ${DATA} != $( cat /var/www/.well-known/acme-challange/${TARGET} ) ]; then
+			echo ${DATA} > /var/www/.well-known/acme-challange/${TARGET}
+		fi
+	;;
+	health)
+		ls /etc/nginx/nginx.conf /etc/nginx/ssl/fullchain.pem /etc/nginx/ssl/key.pem /etc/nginx/ssl/accnt.pem /etc/nginx/ssl/challange 2>&1 > /dev/null
+		return $?
+	;;
+	monitor)
+		inotifyd process_inotifyd /etc/nginx/ssl/fullchain.pem:c /etc/nginx/ssl/key.pem:c /etc/nginx/ssl/accnt.pem:c /var/www/.well-known/acme-challange:n
+	;;
+	client)
+		echo $$ > /var/run/acme-client.pid
+		acme-client -nNOs -C /var/www/.well-known/acme-challange -c /etc/nginx/ssl/ -f /etc/nginx/ssl/accnt.pem -k /etc/nginx/ssl/key.pem {{.DOMAIN_NAMES}}
+		consul kv put nginx/acme/ready 'true'
+		sleep 13h
+	;;
+	*)
+		echo "commands: copy, monitor, client"
+	;;
+esac
+
