@@ -58,7 +58,7 @@
 			restarts: "unlimited"
 		},
 		{
-			name: "onChange",
+			name: "acme",
 			exec: ["/usr/bin/consul-template", 
 				"-template", "/etc/nginx/nginx.hcl:/etc/nginx/nginx.conf:/usr/sbin/nginx -s reload",
 				"-template", "/etc/nginx/ssl/fullchain.hcl:/etc/nginx/ssl/fullchain.pem:/usr/sbin/nginx -s reload",
