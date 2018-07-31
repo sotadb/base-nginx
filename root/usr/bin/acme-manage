@@ -52,6 +52,7 @@ case $1 in
 		echo $$ > /var/run/acme-client.pid
 		acme-client -nNOs -C /var/www/.well-known/acme-challange -c /etc/nginx/ssl/ -f /etc/nginx/ssl/accnt.pem -k /etc/nginx/ssl/key.pem ${DOMAIN_NAMES}
 		sleep 13h
+		rm /var/run/acme-client.pid
 	;;
 	*)
 		echo "commands: copy, monitor, client"
