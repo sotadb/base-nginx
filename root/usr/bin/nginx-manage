@@ -1,0 +1,15 @@
+#!/bin/sh
+
+case $1 in
+	http-check)
+		/usr/bin/curl --fail -so /dev/null http://localhost/nginx-health
+		return $?
+		;;
+	https-check)
+		echo "https-check unimplemented"
+		return $?
+		;;
+	*)
+		echo "Usage: $0 (http-check|https-check)"
+		;;
+esac

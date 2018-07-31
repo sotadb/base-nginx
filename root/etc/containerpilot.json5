@@ -31,7 +31,7 @@
 			port: 80,
 			exec: ["/usr/sbin/nginx"],
 			when: { source: "nginx-setup", once: "exitSuccess" },
-			health: { exec: ["/usr/bin/curl", "--fail", "-o", "/dev/null", "http://localhost/nginx-health"], interval: 5, ttl: 5, timeout: "4s" }
+			health: { exec: "/usr/bin/nginx-manage http-check", interval: 5, ttl: 5, timeout: "4s" }
 		},
 /*		{
 			name: "nginx-ssl",
