@@ -25,7 +25,19 @@ process_inotifyd() {
 	esac
 }
 
-do_client(){
+case $1 in
+	health)
+		ls /etc/nginx/nginx.conf /etc/nginx/ssl/fullchain.pem /etc/nginx/ssl/key.pem /etc/nginx/ssl/accnt.pem /etc/nginx/ssl/challange 2>&1 > /dev/null
+		return $?
+	;;
+	watch-challange)
+		inotifyd process_inotifyd /var/www/.well-known/acme-challange:n
+	;;
+	client)
+		consul lock nginx/acme $0 do_client
+	;;
+#consul lock doesn't seem to work with a shell function, so it must be independently called
+	do_client)
 		echo $$ > /var/run/acme-client.pid
 		if consul kv get nginx/accnt.pem 2> /dev/null; then
 			consul kv nginx/accnt.pem > /etc/nginx/ssl/accnt.pem
@@ -44,19 +56,6 @@ do_client(){
 		fi
 		sleep 13h
 		rm /var/run/acme-client.pid
-}
-
-case $1 in
-	health)
-		ls /etc/nginx/nginx.conf /etc/nginx/ssl/fullchain.pem /etc/nginx/ssl/key.pem /etc/nginx/ssl/accnt.pem /etc/nginx/ssl/challange 2>&1 > /dev/null
-		return $?
-	;;
-	watch-challange)
-		inotifyd process_inotifyd /var/www/.well-known/acme-challange:n
-	;;
-	client)
-		consul lock nginx/acme do_client
-	;;
 	
 	*)
 		echo "commands: health, watch-challange, client"
