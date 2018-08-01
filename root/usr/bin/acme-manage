@@ -40,13 +40,13 @@ case $1 in
 	do_client)
 		echo $$ > /var/run/acme-client.pid
 		if consul kv get nginx/accnt.pem 2> /dev/null; then
-			consul kv nginx/accnt.pem > /etc/nginx/ssl/accnt.pem
+			consul kv get nginx/accnt.pem > /etc/nginx/ssl/accnt.pem
 		fi
 		if consul kv get nginx/key.pem 2> /dev/null; then
-			consul kv nginx/key.pem > /etc/nginx/ssl/key.pem
+			consul kv get nginx/key.pem > /etc/nginx/ssl/key.pem
 		fi
 		if consul kv get nginx/fullchain.pem 2> /dev/null; then
-			consul kv nginx/fullchain.pem > /etc/nginx/ssl/fullchain.pem
+			consul kv get nginx/fullchain.pem > /etc/nginx/ssl/fullchain.pem
 		fi
 		if acme-client -nNOs -c /etc/nginx/ssl/ -f /etc/nginx/ssl/accnt.pem -k /etc/nginx/ssl/key.pem ${DOMAIN_NAMES}; then
 			consul kv put nginx/accnt.pem @/etc/nginx/ssl/accnt.pem
