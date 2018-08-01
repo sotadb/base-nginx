@@ -56,7 +56,7 @@ case $1 in
 		fi
 		sleep 13h
 		rm /var/run/acme-client.pid
-	
+	;;	
 	*)
 		echo "commands: health, watch-challange, client"
 	;;
