@@ -39,6 +39,10 @@ http {
 		{{ if service "acme" }}
 		return 301 https://$host$request_uri;
 		{{ end }}
+
+		location ^~ /.well-known/acme-challenge/ {
+			alias /var/www/acme/;
+		}
 		
 		location /nginx-health {
 			stub_status;

@@ -48,7 +48,7 @@ case $1 in
 		if consul kv get nginx/fullchain.pem 2> /dev/null; then
 			consul kv nginx/fullchain.pem > /etc/nginx/ssl/fullchain.pem
 		fi
-		if acme-client -nNOs -C /var/www/.well-known/acme-challange -c /etc/nginx/ssl/ -f /etc/nginx/ssl/accnt.pem -k /etc/nginx/ssl/key.pem ${DOMAIN_NAMES}; then
+		if acme-client -nNOs -c /etc/nginx/ssl/ -f /etc/nginx/ssl/accnt.pem -k /etc/nginx/ssl/key.pem ${DOMAIN_NAMES}; then
 			consul kv put nginx/accnt.pem @/etc/nginx/ssl/accnt.pem
 			consul kv put nginx/key.pem @/etc/nginx/ssl/key.pem
 			consul kv put nginx/fullchain.pem @/etc/nginx/ssl/fullchain.pem
