@@ -34,6 +34,7 @@ http {
 		server_name localhost;
 		charset     utf-8;
 		client_max_body_size 75M;
+		root /var/www/;
 
 		{{ if service "acme" }}
 		return 301 https://$host$request_uri;
@@ -43,10 +44,6 @@ http {
 			stub_status;
 			allow 127.0.0.1;
 			deny all;
-		}
-
-		location /.well-known/acme-challenge {
-			root /var/www/.well-known/acme-challange;
 		}
 	}
 
