@@ -4,6 +4,7 @@ COPY root /
 ARG PACKAGES="nginx curl acme-client openssl"
 
 RUN apk --update add --no-cache $PACKAGES && \
+ mkdir -p /etc/nginx/ssl && \
  mkdir -p /var/www/.well-known/acme-challange && \
  chown -R nginx:nginx /var/www && \
  ln -sf /dev/stdout /var/log/nginx/access.log && \
