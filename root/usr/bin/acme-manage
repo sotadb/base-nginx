@@ -27,7 +27,7 @@ process_inotifyd() {
 
 case $1 in
 	health)
-		ls /etc/nginx/nginx.conf /etc/nginx/ssl/fullchain.pem /etc/nginx/ssl/key.pem /etc/nginx/ssl/accnt.pem /etc/nginx/ssl/challange 2>&1 > /dev/null
+		ls /etc/nginx/nginx.conf /etc/nginx/ssl/fullchain.pem /etc/nginx/ssl/key.pem /etc/nginx/ssl/accnt.pem >/dev/null 2>&1
 		return $?
 	;;
 	watch-challange)
