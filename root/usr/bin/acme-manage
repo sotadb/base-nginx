@@ -52,9 +52,8 @@ case $1 in
 			consul kv put nginx/accnt.pem @/etc/nginx/ssl/accnt.pem
 			consul kv put nginx/key.pem @/etc/nginx/ssl/key.pem
 			consul kv put nginx/fullchain.pem @/etc/nginx/ssl/fullchain.pem
-			/usr/bin/consul-template -once -template /etc/nginx/nginx.hcl:/etc/nginx/nginx.conf
-			/usr/sbin/nginx -s reload
 		fi
+		/usr/bin/consul-template -once -template "/etc/nginx/nginx.hcl:/etc/nginx/nginx.conf:/usr/sbin/nginx -s reload"
 		sleep 13h
 		rm /var/run/acme-client.pid
 	;;	
