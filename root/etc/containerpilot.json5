@@ -56,7 +56,7 @@
 			name: "acme",
 			exec: ["/usr/bin/acme-manage", "client"], 
 			when: { source: "nginx", once: "healthy" },
-			health: { exec: "acme-manage health", interval: 5, ttl: 5, timeout: "4s" },
+			health: { exec: ["/usr/bin/acme-manage", "health"], interval: 5, ttl: 5, timeout: "4s" },
 			restarts: "unlimited"
 		}
 	]
