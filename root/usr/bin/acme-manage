@@ -31,7 +31,7 @@ case $1 in
 		return $?
 	;;
 	watch-challange)
-		inotifyd process_inotifyd /var/www/.well-known/acme-challange:n
+		inotifyd process_inotifyd /var/www/acme:n
 	;;
 	client)
 		consul lock nginx/acme $0 do_client
