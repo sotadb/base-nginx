@@ -53,7 +53,7 @@ case $1 in
 			consul kv put nginx/key.pem @/etc/nginx/ssl/key.pem
 			consul kv put nginx/fullchain.pem @/etc/nginx/ssl/fullchain.pem
 		fi
-		/usr/bin/consul-template -once -template "/etc/nginx/nginx.hcl:/etc/nginx/nginx.conf:/usr/sbin/nginx -s reload"
+		/usr/sbin/nginx -s reload #we reload incase the only change was the cert. It will be reloaded again if the config changed.
 		sleep 13h
 		rm /var/run/acme-client.pid
 	;;	
