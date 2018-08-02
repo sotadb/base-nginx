@@ -22,22 +22,17 @@
 			exec: ["update-domains"]
 		},
 		{
-			name: "nginx-setup",
-			exec: ["/usr/bin/consul-template", "-once", "-template", "/etc/nginx/nginx.hcl:/etc/nginx/nginx.conf:/usr/sbin/nginx" ],
-			when: { source: "domains-init", once: "exitSuccess" }
-		},
-		{
 			name: "nginx",
 			port: 80,
-			exec: ["/usr/bin/consul-template", "-template", "/etc/nginx/nginx.hcl:/etc/nginx/nginx.conf:/usr/sbin/nginx -s reload" ],
-			when: { source: "nginx-setup", once: "exitSuccess" },
+			exec: ["/usr/bin/consul-template", "-exec", "/usr/sbin/nginx", "-template", "/etc/nginx/nginx.hcl:/etc/nginx/nginx.conf" ],
+			when: { source: "domains-init", once: "exitSuccess" },
 			health: { exec: "/usr/bin/nginx-manage http-check", interval: 5, ttl: 10, timeout: "4s" }
 		},
 		{
 			name: "nginx-ssl",
 			port: 443,
 			/*exec: ["/usr/sbin/nginx"],*/
-			when: { source: "nginx-setup", once: "exitSuccess" },
+			when: { source: "nginx", once: "healthy" },
 			health: { exec: "/usr/bin/nginx-manage https-check", interval: 5, ttl: 10, timeout: "4s" }
 		},
 		{
