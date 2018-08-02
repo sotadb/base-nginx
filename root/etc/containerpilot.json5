@@ -36,9 +36,9 @@
 		{
 			name: "nginx-ssl",
 			port: 443,
+			/*exec: ["/usr/sbin/nginx"],*/
 			when: { source: "nginx-setup", once: "exitSuccess" },
-			/*exec: ["/usr/sbin/nginx"],
-			health: { exec: "/usr/bin/nginx-manage http-check", interval: 5, ttl: 10, timeout: "4s" }*/
+			health: { exec: "/usr/bin/nginx-manage https-check", interval: 5, ttl: 10, timeout: "4s" }
 		},
 		{
 			name: "acme-challange",
