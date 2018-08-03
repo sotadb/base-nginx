@@ -8,6 +8,8 @@ events {
 	# multi_accept on;
 }
 
+{{ with $acme := AND (file "/etc/nginx/ssl/fullchain.pem") (file "/etc/nginx/ssl/key.pem") }}
+
 http {
         sendfile on;
         tcp_nopush on;
@@ -36,7 +38,7 @@ http {
 		client_max_body_size 75M;
 		root /var/www/;
 
-		{{ if service "acme" }}
+		{{ if $acme }}
 		return 301 https://$host$request_uri;
 		{{ end }}
 
@@ -51,7 +53,7 @@ http {
 		}
 	}
 
-{{ if service "acme"  }}
+{{ if $acme }}
 	server {
 		listen 443 ssl;
 		ssl_certificate /etc/nginx/ssl/fullcert.pem;
@@ -78,14 +80,14 @@ http {
 		client_max_body_size 75M; 
 		root /var/www/;
 
-		{{if service "consul"}}
+		{{ if service "consul" }}
 		location /consul-status{
 			proxy_pass http://127.0.0.1:8500/ui;
 		}
 		location /v1{
 			proxy_pass http://127.0.0.1:8500/v1;
 		}
-		{{end}}
+		{{ end }}
 
 		location /nginx-health {
 			stub_status;
@@ -93,5 +95,5 @@ http {
 			deny all;
 		}
 	}
-{{end}}
+{{ end }}
 }

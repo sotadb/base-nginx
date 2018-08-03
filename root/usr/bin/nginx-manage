@@ -2,11 +2,11 @@
 
 case $1 in
 	http-check)
-		/usr/bin/curl --fail -so /dev/null http://localhost/nginx-health > /dev/null
+		/usr/bin/curl --fail -so /dev/null http://localhost/nginx-health > /dev/null 2>&1
 		return $?
 		;;
 	https-check)
-		/usr/bin/curl --fail -so /dev/null http://localhost/nginx-health > /dev/null
+		/usr/bin/curl --fail -so /dev/null http://localhost/nginx-health > /dev/null 2>&1
 		return $?
 		;;
 	*)
