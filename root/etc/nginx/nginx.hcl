@@ -8,7 +8,7 @@ events {
 	# multi_accept on;
 }
 
-{{ with $acme := AND (file "/etc/nginx/ssl/fullchain.pem") (file "/etc/nginx/ssl/key.pem") }}
+{{ with $acme := and file (("/etc/nginx/ssl/fullchain.pem") (file "/etc/nginx/ssl/key.pem")) }}
 
 http {
         sendfile on;
