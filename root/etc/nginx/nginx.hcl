@@ -8,6 +8,12 @@ events {
 	# multi_accept on;
 }
 
+{{ if file "/etc/nginx/ssl/configured"|parseInt > 0 }}
+	{{ $acme_ready = true }}
+{{ else }}
+	{{ $acme_ready = false }}
+{{ end }}
+
 http {
         sendfile on;
         tcp_nopush on;
@@ -36,7 +42,7 @@ http {
 		client_max_body_size 75M;
 		root /var/www/;
 
-		{{ if file "/etc/nginx/ssl/configured"|parseBool }}
+		{{ if $acme_ready }}
 		return 301 https://$host$request_uri;
 		{{ end }}
 
@@ -51,7 +57,7 @@ http {
 		}
 	}
 
-{{ if file "/etc/nginx/ssl/configured"|parseBool }}
+{{ if $acme_ready }}
 	server {
 		listen 443 ssl;
 		ssl_certificate /etc/nginx/ssl/fullcert.pem;
