@@ -1,3 +1,5 @@
+
+{{ with $acme_ready := isTrue (file "/etc/nginx/ssl/configured"|parseInt) }}
 user nginx;
 worker_processes 4;
 pid /var/run/nginx.pid;
@@ -8,7 +10,6 @@ events {
 	# multi_accept on;
 }
 
-{{ with $acme_ready := isTrue file "/etc/nginx/ssl/configured"|parseInt }}
 
 http {
         sendfile on;
@@ -97,3 +98,4 @@ http {
 	}
 {{ end }}
 }
+{{ end }}
