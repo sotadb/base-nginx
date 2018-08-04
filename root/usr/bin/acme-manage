@@ -49,7 +49,7 @@ case $1 in
 			consul kv put nginx/key.pem @/etc/nginx/ssl/key.pem
 			consul kv put nginx/fullchain.pem @/etc/nginx/ssl/fullchain.pem
 		fi
-		date +%s > /etc/nginx/ssl/configured
+		printf $(date +%s) > /etc/nginx/ssl/configured
 		sleep 13h
 		rm /var/run/acme-client.pid
 	;;	
