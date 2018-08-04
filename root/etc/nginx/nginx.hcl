@@ -8,10 +8,7 @@ events {
 	# multi_accept on;
 }
 
-{{ with $acme_ready := false }}
-{{ if gt file "/etc/nginx/ssl/configured"|parseInt 0 }}
-	{{ $acme_ready := true }}
-{{ end }}
+{{ with $acme_ready := isTrue file "/etc/nginx/ssl/configured"|parseInt }}
 
 http {
         sendfile on;
