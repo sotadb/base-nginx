@@ -36,7 +36,7 @@ http {
 		client_max_body_size 75M;
 		root /var/www/;
 
-		{{ if file '/etc/nginx/ssl/configured'|parseBool }}
+		{{ if file "/etc/nginx/ssl/configured"|parseBool }}
 		return 301 https://$host$request_uri;
 		{{ end }}
 
@@ -51,7 +51,7 @@ http {
 		}
 	}
 
-{{ if file '/etc/nginx/ssl/configured'|parseBool }}
+{{ if file "/etc/nginx/ssl/configured"|parseBool }}
 	server {
 		listen 443 ssl;
 		ssl_certificate /etc/nginx/ssl/fullcert.pem;
