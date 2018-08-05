@@ -82,11 +82,11 @@ http {
 		root /var/www/;
 
 		{{ if service "consul" }}
-		location /consul-status{
-			proxy_pass http://127.0.0.1:8500/ui;
+		location /ui{
+			proxy_pass https://127.0.0.1:8500/ui;
 		}
 		location /v1{
-			proxy_pass http://127.0.0.1:8500/v1;
+			proxy_pass https://127.0.0.1:8500/v1;
 		}
 		{{ end }}
 
