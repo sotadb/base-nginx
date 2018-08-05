@@ -83,10 +83,10 @@ http {
 
 		{{ if service "consul" }}
 		location /ui{
-			proxy_pass https://127.0.0.1:8500/ui;
+			proxy_pass http://127.0.0.1:8500/ui;
 		}
 		location /v1{
-			proxy_pass https://127.0.0.1:8500/v1;
+			proxy_pass http://127.0.0.1:8500/v1;
 		}
 		{{ end }}
 
