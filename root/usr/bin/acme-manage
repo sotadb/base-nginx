@@ -37,12 +37,15 @@ case $1 in
 		echo $$ > /var/run/acme-client.pid
 		if consul kv get nginx/accnt.pem >/dev/null 2>&1; then
 			consul kv get nginx/accnt.pem >/etc/nginx/ssl/accnt.pem
+			echo "loaded nginx/accnt.pem"
 		fi
 		if consul kv get nginx/key.pem >/dev/null 2>&1; then
 			consul kv get nginx/key.pem >/etc/nginx/ssl/key.pem
+			echo "loaded nginx/key.pem"
 		fi
 		if consul kv get nginx/fullchain.pem >/dev/null 2>&1; then
 			consul kv get nginx/fullchain.pem >/etc/nginx/ssl/fullchain.pem
+			echo "loaded nginx/fullchain.pem"
 		fi
 		if acme-client -nNOs -c /etc/nginx/ssl/ -f /etc/nginx/ssl/accnt.pem -k /etc/nginx/ssl/key.pem ${DOMAIN_NAMES}; then
 			consul kv put nginx/accnt.pem @/etc/nginx/ssl/accnt.pem
