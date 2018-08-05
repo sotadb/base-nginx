@@ -57,7 +57,7 @@ http {
 {{ if $acme_ready }}
 	server {
 		listen 443 ssl;
-		ssl_certificate /etc/nginx/ssl/fullcert.pem;
+		ssl_certificate /etc/nginx/ssl/fullchain.pem;
                 ssl_certificate_key /etc/nginx/ssl/key.pem;
                 ssl_session_cache shared:SSL:10m;
                 ssl_protocols TLSv1.2 TLSv1.1 TLSv1;
