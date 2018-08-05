@@ -83,9 +83,11 @@ http {
 
 		{{ if service "consul" }}
 		location /ui{
+			add_header Content-Security-Policy "default-src 'unsafe-inline'";
 			proxy_pass http://127.0.0.1:8500/ui;
 		}
 		location /v1{
+			add_header Content-Security-Policy "default-src 'unsafe-inline'";
 			proxy_pass http://127.0.0.1:8500/v1;
 		}
 		{{ end }}
