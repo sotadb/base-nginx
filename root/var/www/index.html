@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang='en'>
+	<head>
+		<meta charset="utf-8"></meta>
+		<title>Welcome to NGiNX, SotADB edition</title>
+	</head>
+	<body>
+		<h1>Welcome to NGiNX, SotADB edition</h1>
+		<p>If you're reading this, NGiNX is setup and running. It's configured for SSL, and pulled an SSL cert 
+		from <a href="https://letsencrypt.org/">Let's Encrypt</a>. <a href="https://weakdh.org/sysadmin.html"> 
+		"Export" Cypher Suites have been disabled, Elliptic Curve Diffie-Hellman Key Exchange has been enabled, 
+		and a safe, strong, 2048-bit prime Diffie-Hellman group was generated.</a> This can be tested with 
+		<a href="https://ssllabs.com/ssltest/">Qualsys' SSL Server Test</a>.</p>
+
+		<p>With the exception of some management pages, CSP is enabled, and set to "self". This instructs 
+		web-browser to deny loading inline scripts or resources from external sites, and possibly will need 
+		overriden.</p>
+
+		<p>This particular configuration was created to serve as a secure foundational container for 
+		<a href="www.sotadb.info">www.sotadb.info</a>. It has been made public, so feel free to use it. If you have
+		any observations about how it can be improved (particularly how it's security can be improved) please post 
+		an <a href="https://github.com/sotadb/nginx">issue to our github issues page</a>.</p>
+	</body>
+</html>
