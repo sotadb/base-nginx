@@ -25,7 +25,7 @@ http {
         keepalive_timeout 65;
         types_hash_max_size 2048;
         server_tokens off;
-        access_log /var/log/nginx/access.log if=$log_ip;
+        access_log /var/log/nginx/access.log combined if=$log_ip;
         error_log  /var/log/nginx/error.log;
         gzip on;
         gzip_disable "msie6";
