@@ -67,7 +67,7 @@ http {
 		ssl_certificate /etc/nginx/ssl/fullchain.pem;
                 ssl_certificate_key /etc/nginx/ssl/key.pem;
                 ssl_session_cache shared:SSL:10m;
-                ssl_protocols TLSv1.2 TLSv1.1 TLSv1;
+                ssl_protocols TLSv1.3 TLSv1.2 TLSv1.1;
 
 		ssl_ciphers 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:DES-CBC3-SHA:!CAMELLIA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA';
 		ssl_prefer_server_ciphers on;
@@ -80,7 +80,7 @@ http {
 		add_header X-Frame-Options "DENY"; 
 		add_header X-XSS-Protection "1; mode=block"; 
 		add_header X-Content-Type-Options "nosniff"; 
-		add_header Content-Security-Policy "default-src 'self'; img-src 'self'; script-src 'self'; font-src 'self'; style-src 'self'; child-src 'self'";
+		add_header Content-Security-Policy "default-src 'self';";
 
 		keepalive_timeout 80s; 
 		server_name localhost; 
@@ -90,11 +90,10 @@ http {
 
 		{{ if service "consul" }}
 		location /ui{
-			add_header Content-Security-Policy "default-src 'self' 'unsafe-inline'";
+			add_header Content-Security-Policy "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' 'unsafe-inline'";
 			proxy_pass http://127.0.0.1:8500/ui;
 		}
 		location /v1{
-			add_header Content-Security-Policy "default-src 'unsafe-inline'";
 			proxy_pass http://127.0.0.1:8500/v1;
 		}
 		{{ end }}
