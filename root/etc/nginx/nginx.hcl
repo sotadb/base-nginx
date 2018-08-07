@@ -10,12 +10,15 @@ events {
 	# multi_accept on;
 }
 
-map $remote_addr $log_ip {
-	"127.0.0.1" 0;
-	default 1;
-}
 
 http {
+
+	# filter for access logs. We don't want to log the health-checks!
+	map $remote_addr $log_ip {
+		"127.0.0.1" 0;
+		default 1;
+	}
+
         sendfile on;
         tcp_nopush on;
         tcp_nodelay on;
