@@ -35,21 +35,26 @@ case $1 in
 #consul lock doesn't seem to work with a shell function, so it must be independently called
 	do_client)
 		echo $$ > /var/run/acme-client.pid
-		if consul kv get nginx/accnt.pem >/dev/null 2>&1; then
-			consul kv get nginx/accnt.pem >/etc/nginx/ssl/accnt.pem
-			echo "loaded nginx/accnt.pem"
+		if consul kv get nginx/acme/accnt.pem >/dev/null 2>&1; then
+			consul kv get nginx/acme/accnt.pem >/etc/nginx/ssl/accnt.pem
 		fi
-		if consul kv get nginx/key.pem >/dev/null 2>&1; then
-			consul kv get nginx/key.pem >/etc/nginx/ssl/key.pem
-			echo "loaded nginx/key.pem"
+		if consul kv get nginx/acme/key.pem >/dev/null 2>&1; then
+			consul kv get nginx/acme/key.pem >/etc/nginx/ssl/key.pem
 		fi
-		if consul kv get nginx/fullchain.pem >/dev/null 2>&1; then
-			consul kv get nginx/fullchain.pem >/etc/nginx/ssl/fullchain.pem
-			echo "loaded nginx/fullchain.pem"
+		if consul kv get nginx/acme/cert.pem >/dev/null 2>&1; then
+			consul kv get nginx/acme/cert.pem >/etc/nginx/ssl/cert.pem
+		fi
+		if consul kv get nginx/acme/chain.pem >/dev/null 2>&1; then
+			consul kv get nginx/acme/chain.pem >/etc/nginx/ssl/chain.pem
+		fi
+		if consul kv get nginx/acme/fullchain.pem >/dev/null 2>&1; then
+			consul kv get nginx/acme/fullchain.pem >/etc/nginx/ssl/fullchain.pem
 		fi
 		if acme-client -nNOs -c /etc/nginx/ssl/ -f /etc/nginx/ssl/accnt.pem -k /etc/nginx/ssl/key.pem ${DOMAIN_NAMES}; then
 			consul kv put nginx/accnt.pem @/etc/nginx/ssl/accnt.pem
 			consul kv put nginx/key.pem @/etc/nginx/ssl/key.pem
+			consul kv put nginx/cert.pem @/etc/nginx/ssl/cert.pem
+			consul kv put nginx/chain.pem @/etc/nginx/ssl/chain.pem
 			consul kv put nginx/fullchain.pem @/etc/nginx/ssl/fullchain.pem
 		fi
 		printf $(date +%s) > /etc/nginx/ssl/configured
