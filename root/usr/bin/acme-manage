@@ -6,13 +6,13 @@ process_inotifyd() {
 			case $1 in
 				n)
 					if [ $(cat $2/$3) != $(consul kv get nginx/challange) ]; then
-						consul kv put nginx/challange @$2/$3
-						consul kv put nginx/challange-name $3
+						consul kv put nginx/acme/challange @$2/$3
+						consul kv put nginx/acme/challange-name $3
 					fi
 				;;
 				d)
-					consul kv delete nginx/challange
-					consul kv delete nginx/challange-name
+					consul kv delete nginx/acme/challange
+					consul kv delete nginx/acme/challange-name
 				;;
 				*)
 					echo "unknown operation from inotifyd"
@@ -51,11 +51,11 @@ case $1 in
 			consul kv get nginx/acme/fullchain.pem >/etc/nginx/ssl/fullchain.pem
 		fi
 		if acme-client -nNOs -c /etc/nginx/ssl/ -f /etc/nginx/ssl/accnt.pem -k /etc/nginx/ssl/key.pem ${DOMAIN_NAMES}; then
-			consul kv put nginx/accnt.pem @/etc/nginx/ssl/accnt.pem
-			consul kv put nginx/key.pem @/etc/nginx/ssl/key.pem
-			consul kv put nginx/cert.pem @/etc/nginx/ssl/cert.pem
-			consul kv put nginx/chain.pem @/etc/nginx/ssl/chain.pem
-			consul kv put nginx/fullchain.pem @/etc/nginx/ssl/fullchain.pem
+			consul kv put nginx/acme/accnt.pem @/etc/nginx/ssl/accnt.pem
+			consul kv put nginx/acme/key.pem @/etc/nginx/ssl/key.pem
+			consul kv put nginx/acme/cert.pem @/etc/nginx/ssl/cert.pem
+			consul kv put nginx/acme/chain.pem @/etc/nginx/ssl/chain.pem
+			consul kv put nginx/acme/fullchain.pem @/etc/nginx/ssl/fullchain.pem
 		fi
 		printf $(date +%s) > /etc/nginx/ssl/configured
 		sleep 13h
