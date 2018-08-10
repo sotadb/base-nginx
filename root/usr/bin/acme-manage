@@ -50,11 +50,12 @@ case $1 in
 	;;
 	client)
 		pull_keys
+		echo $$ > /var/run/acme-client.pid
 		consul lock nginx/acme $0 do_client
+		rm /var/run/acme-client.pid
 	;;
 #consul lock doesn't seem to work with a shell function, so it must be independently called
 	do_client)
-		echo $$ > /var/run/acme-client.pid
 		if acme-client -enNOs -c /etc/nginx/ssl/ -f /etc/nginx/ssl/accnt.pem -k /etc/nginx/ssl/key.pem ${DOMAIN_NAMES}; then
 			consul kv put nginx/acme/accnt.pem @/etc/nginx/ssl/accnt.pem
 			consul kv put nginx/acme/key.pem @/etc/nginx/ssl/key.pem
@@ -64,7 +65,6 @@ case $1 in
 			printf $(date +%s) > /etc/nginx/ssl/configured
 		fi
 		sleep 13h
-		rm /var/run/acme-client.pid
 	;;	
 	*)
 		echo "commands: health, watch-challange, client"
