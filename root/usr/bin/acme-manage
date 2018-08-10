@@ -40,6 +40,7 @@ pull_keys() {
 		fi
 		if consul kv get nginx/acme/fullchain.pem >/dev/null 2>&1; then
 			consul kv get nginx/acme/fullchain.pem >/etc/nginx/ssl/fullchain.pem
+			printf $(date +%s) > /etc/nginx/ssl/configured
 		fi
 }
 
@@ -60,8 +61,8 @@ case $1 in
 			consul kv put nginx/acme/cert.pem @/etc/nginx/ssl/cert.pem
 			consul kv put nginx/acme/chain.pem @/etc/nginx/ssl/chain.pem
 			consul kv put nginx/acme/fullchain.pem @/etc/nginx/ssl/fullchain.pem
+			printf $(date +%s) > /etc/nginx/ssl/configured
 		fi
-		printf $(date +%s) > /etc/nginx/ssl/configured
 		sleep 13h
 		rm /var/run/acme-client.pid
 	;;	
