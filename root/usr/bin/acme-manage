@@ -50,8 +50,9 @@ case $1 in
 	;;
 	client)
 		pull_keys
-		echo $$ > /var/run/acme-client.pid
-		consul lock nginx/acme $0 do_client
+		consul lock nginx/acme $0 do_client &
+		echo $! > /var/run/acme-client.pid
+		wait
 		rm /var/run/acme-client.pid
 	;;
 #consul lock doesn't seem to work with a shell function, so it must be independently called
@@ -64,7 +65,7 @@ case $1 in
 			consul kv put nginx/acme/fullchain.pem @/etc/nginx/ssl/fullchain.pem
 			printf $(date +%s) > /etc/nginx/ssl/configured
 		fi
-		sleep 13h
+		exec sleep 13h
 	;;	
 	*)
 		echo "commands: health, watch-challange, client"
