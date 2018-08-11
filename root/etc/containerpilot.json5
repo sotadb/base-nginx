@@ -37,13 +37,19 @@
 		{
 			name: "acme-challange",
 			exec: ["/usr/bin/acme-manage", "watch-challange"],
-			when: { source: "nginx", once: "healthy" },
+			when: { source: "consul-agent", once: "healthy" },
 			restarts: "unlimited"
 		},
 		{
 			name: "onChange-Domains",
 			exec: ["consul", "watch", "-type=key", "-key=nginx/DOMAIN_NAMES", "update-domains"],
 			when: { source: "consul-agent", once: "healthy" },
+			restarts: "unlimited"
+		},
+		{
+			name: "onChange-challange",
+			exec: ["consul", "watch", "-type=key", "-key=nginx/acme/challange-name", "acme-manage", "get-challange"]
+			when: { source: "consul-agent", once: "healthy" }
 			restarts: "unlimited"
 		},
 		{

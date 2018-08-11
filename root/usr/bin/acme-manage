@@ -48,6 +48,13 @@ case $1 in
 	watch-challange)
 		inotifyd process_inotifyd /var/www/acme:n
 	;;
+	get-challange)
+		if consul kv nginx/acme/challange-name >/dev/null 2>&1; then
+			consul kv get nginx/acme/challange > /var/www/acme/$(consul kv nginx/acme/challange-name)
+		else
+			rm /var/www/acme/*
+		fi
+	;;
 	client)
 		pull_keys
 		consul lock nginx/acme $0 do_client &
