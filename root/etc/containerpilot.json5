@@ -48,8 +48,8 @@
 		},
 		{
 			name: "onChange-challange",
-			exec: ["consul", "watch", "-type=key", "-key=nginx/acme/challange-name", "acme-manage", "get-challange"]
-			when: { source: "consul-agent", once: "healthy" }
+			exec: ["consul", "watch", "-type=key", "-key=nginx/acme/challange-name", "acme-manage", "get-challange"],
+			when: { source: "consul-agent", once: "healthy" },
 			restarts: "unlimited"
 		},
 		{
