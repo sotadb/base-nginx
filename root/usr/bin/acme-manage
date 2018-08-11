@@ -52,7 +52,9 @@ case $1 in
 		if consul kv nginx/acme/challange-name >/dev/null 2>&1; then
 			consul kv get nginx/acme/challange > /var/www/acme/$(consul kv nginx/acme/challange-name)
 		else
-			rm /var/www/acme/*
+			if [ -e /var/www/acme/* ]; then
+				rm /var/www/acme/* 2>/dev/null
+			fi
 		fi
 	;;
 	client)
