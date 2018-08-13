@@ -1,83 +1,44 @@
 #!/bin/sh
 
-process_inotifyd() {
-	case $# in
-		3)
-			case $1 in
-				n)
-					if [ $(cat $2/$3) != $(consul kv get nginx/challange) ]; then
-						consul kv put nginx/acme/challange @$2/$3
-						consul kv put nginx/acme/challange-name $3
-					fi
-				;;
-				d)
-					consul kv delete nginx/acme/challange
-					consul kv delete nginx/acme/challange-name
-				;;
-				*)
-					echo "unknown operation from inotifyd"
-				;;
-			esac
-		;;
-		*)
-			echo "invalid number of options for process_inotifyd()"
-		;;
-	esac
-}
-
-pull_keys() {
-		if consul kv get nginx/acme/accnt.pem >/dev/null 2>&1; then
-			consul kv get nginx/acme/accnt.pem >/etc/nginx/ssl/accnt.pem
-		fi
-		if consul kv get nginx/acme/key.pem >/dev/null 2>&1; then
-			consul kv get nginx/acme/key.pem >/etc/nginx/ssl/key.pem
-		fi
-		if consul kv get nginx/acme/cert.pem >/dev/null 2>&1; then
-			consul kv get nginx/acme/cert.pem >/etc/nginx/ssl/cert.pem
-		fi
-		if consul kv get nginx/acme/chain.pem >/dev/null 2>&1; then
-			consul kv get nginx/acme/chain.pem >/etc/nginx/ssl/chain.pem
-		fi
-		if consul kv get nginx/acme/fullchain.pem >/dev/null 2>&1; then
-			consul kv get nginx/acme/fullchain.pem >/etc/nginx/ssl/fullchain.pem
-			printf $(date +%s) > /etc/nginx/ssl/configured
-		fi
-}
-
 case $1 in
-	watch-challange)
-		inotifyd process_inotifyd /var/www/acme:n
-	;;
-	get-challange)
-		if consul kv nginx/acme/challange-name >/dev/null 2>&1; then
-			consul kv get nginx/acme/challange > /var/www/acme/$(consul kv nginx/acme/challange-name)
-		else
-			if [ -e /var/www/acme/* ]; then
-				rm /var/www/acme/* 2>/dev/null
-			fi
-		fi
-	;;
 	client)
-		pull_keys
-		consul lock nginx/acme $0 do_client &
-		echo $! > /var/run/acme-client.pid
-		wait
-		rm /var/run/acme-client.pid
+		consul lock nginx/acme $0 do_client
 	;;
 #consul lock doesn't seem to work with a shell function, so it must be independently called
 	do_client)
-		if acme-client -enNOs -c /etc/nginx/ssl/ -f /etc/nginx/ssl/accnt.pem -k /etc/nginx/ssl/key.pem ${DOMAIN_NAMES}; then
-			consul kv put nginx/acme/accnt.pem @/etc/nginx/ssl/accnt.pem
-			consul kv put nginx/acme/key.pem @/etc/nginx/ssl/key.pem
-			consul kv put nginx/acme/cert.pem @/etc/nginx/ssl/cert.pem
-			consul kv put nginx/acme/chain.pem @/etc/nginx/ssl/chain.pem
-			consul kv put nginx/acme/fullchain.pem @/etc/nginx/ssl/fullchain.pem
-			printf $(date +%s) > /etc/nginx/ssl/configured
+		echo $$ > /var/run/acme.pid
+		if acme-client -enNOs -c /etc/ssl/ -f /etc/ssl/accnt.pem -k /etc/ssl/key.pem -C /etc/ssl/challange/ $(consul kv get acme/domains); then
+			printf $(date +%s) > /etc/ssl/configured
 		fi
-		exec sleep 13h
-	;;	
+		sleep 13h &
+		wait
+		rm /var/run/acme.pid
+	;;
+	init)
+		consul lock acme/init $0 do_init
+#consul lock doesn't seem to work with a shell function, so it must be independently called
+	;;
+	do_init)
+		CONSUL_NAMES=$( consul kv get acme/domains 2>/dev/null )
+		NEW_NAMES=$( echo ${CONSUL_NAMES} ${DOMAIN_NAMES} | awk '{line=""; for (i=1; i<=NF; i++) {if (line !~ $i) { line=line $i " "}}; print line}' )
+		if [ "${CONSUL_NAMES}" != "${NEW_NAMES}" ]; then
+			consul kv put acme/domains "${NEW_NAMES}"
+		fi
+		if [ ! -e "/etc/ssl/dhparam.pem" ]; then
+			openssl dhparam -out /etc/nginx/ssl/dhparams.pem 2048
+		fi
+	;;
+	watch)
+		consul watch -type=key -key=acme/domains $0 kill_client
+	;;
+#I don't expect watch to be any better then lock, so it's independently called
+	kill_client)
+		if [ -e "/var/run/acme.pid" ]; then
+			kill $( cat /var/run/acme.pid )
+		fi
+	;;
 	*)
-		echo "commands: health, watch-challange, client"
+		echo "commands: init, client, watch"
 	;;
 esac
 

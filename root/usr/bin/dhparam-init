@@ -1,8 +1,0 @@
-#!/bin/sh
-
-if [ -n "$( consul kv get nginx/dhparams )" ]; then
-	consul kv get nginx/dhparams > /etc/nginx/ssl/dhparams.pem
-else
-	openssl dhparam -out /etc/nginx/ssl/dhparams.pem 2048
-	consul kv put nginx/dhparams @/etc/nginx/ssl/dhparams.pem
-fi
