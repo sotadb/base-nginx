@@ -7,8 +7,9 @@ case $1 in
 #consul lock doesn't seem to work with a shell function, so it must be independently called
 	do_client)
 		echo $$ > /var/run/acme.pid
-		if acme-client -enNOs -c /etc/ssl/ -f /etc/ssl/accnt.pem -k /etc/ssl/key.pem -C /etc/ssl/challange/ $(consul kv get acme/domains); then
-			printf $(date +%s) > /etc/ssl/configured
+		if acme-client -enNOs -c /etc/ssl/acme/ -f /etc/ssl/acme/accnt.pem -k /etc/ssl/acme/key.pem -C /etc/ssl/acme/challange/ \
+				$(consul kv get acme/domains); then
+			printf $(date +%s) > /etc/ssl/acme/configured
 		fi
 		sleep 13h &
 		wait
@@ -25,7 +26,7 @@ case $1 in
 			consul kv put acme/domains "${NEW_NAMES}"
 		fi
 		if [ ! -e "/etc/ssl/dhparam.pem" ]; then
-			openssl dhparam -out /etc/nginx/ssl/dhparams.pem 2048
+			openssl dhparam -out /etc/ssl/acme/dhparams.pem 2048
 		fi
 	;;
 	watch)
