@@ -13,7 +13,7 @@
 			when: { source: "consul-agent", once: "stopping" }
 		},
 		{	name: "acme-init",
-			exec: ["/usr/bin/acme-manage", "init"]
+			exec: ["/usr/bin/acme-manage", "init"],
 			when: { source: "consul-agent", once: "healthy" },
 		},
 		{
