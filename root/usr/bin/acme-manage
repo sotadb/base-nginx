@@ -29,7 +29,7 @@ case $1 in
 			openssl dhparam -out /etc/ssl/acme/dhparams.pem 2048
 		fi
 		if [ ! -e "/etc/ssl/acme/configured" ]; then
-			echo 0 > /etc/ssl/acme/configured
+			printf 0 > /etc/ssl/acme/configured
 		fi
 	;;
 	watch)
