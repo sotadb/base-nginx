@@ -33,6 +33,7 @@ case $1 in
 		fi
 		if [ ! -d "/etc/ssl/acme/challange" ]; then
 			mkdir /etc/ssl/acme/challange
+			ln -s /etc/ssl/acme/challange/ /var/www/acme
 		fi
 	;;
 	watch)

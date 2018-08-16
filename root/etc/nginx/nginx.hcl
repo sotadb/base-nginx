@@ -51,7 +51,7 @@ http {
 		{{ end }}
 
 		location ^~ /.well-known/acme-challenge/ {
-			alias /etc/ssl/acme/challange/;
+			alias /var/www/acme/;
 		}
 		
 		location /nginx-health {
@@ -87,6 +87,10 @@ http {
 		charset utf-8; 
 		client_max_body_size 75M; 
 		root /var/www/;
+		
+		location ^~ /.well-known/acme-challenge/ {
+			alias /var/www/acme/;
+		}
 
 		{{ if service "consul" }}
 		location /ui{
