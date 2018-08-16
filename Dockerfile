@@ -5,6 +5,8 @@ ARG PACKAGES="nginx curl acme-client openssl"
 
 RUN apk --update add --no-cache $PACKAGES && \
  rmdir /var/www/acme && \
+ rm -rf /etc/ssl/acme && \
+ rm -rf /var/www/acme && \
  ln -s /acme/keys /etc/ssl/acme && \
  ln -s /acme/challange /var/www/acme && \
  ln -sf /dev/stdout /var/log/nginx/access.log && \
