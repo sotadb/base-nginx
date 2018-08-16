@@ -25,7 +25,7 @@ case $1 in
 		if [ "${CONSUL_NAMES}" != "${NEW_NAMES}" ]; then
 			consul kv put acme/domains "${NEW_NAMES}"
 		fi
-		if [ ! -e "/etc/ssl/acme/dhparam.pem" ]; then
+		if [ ! -e "/etc/ssl/acme/dhparams.pem" ]; then
 			openssl dhparam -out /etc/ssl/acme/dhparams.pem 2048
 		fi
 		if [ ! -e "/etc/ssl/acme/configured" ]; then
