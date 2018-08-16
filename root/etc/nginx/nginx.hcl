@@ -51,6 +51,7 @@ http {
 		{{ end }}
 
 		location ^~ /.well-known/acme-challenge/ {
+			disable_symlinks off;
 			alias /var/www/acme/;
 		}
 		
@@ -89,6 +90,7 @@ http {
 		root /var/www/;
 		
 		location ^~ /.well-known/acme-challenge/ {
+			disable_symlinks off;
 			alias /var/www/acme/;
 		}
 
