@@ -25,10 +25,10 @@ case $1 in
 		if [ "${CONSUL_NAMES}" != "${NEW_NAMES}" ]; then
 			consul kv put acme/domains "${NEW_NAMES}"
 		fi
-		if [ ! -D "/acme/challange" ]; then
+		if [ ! -d "/acme/challange" ]; then
 			mkdir /acme/challange
 		fi
-		if [ ! -D "/acme/keys" ]; then
+		if [ ! -d "/acme/keys" ]; then
 			mkdir /acme/keys
 		fi
 		if [ ! -e "/etc/ssl/acme/dhparams.pem" ]; then
