@@ -31,6 +31,9 @@ case $1 in
 		if [ ! -e "/etc/ssl/acme/configured" ]; then
 			printf 0 > /etc/ssl/acme/configured
 		fi
+		if [ ! -d "/etc/ssl/acme/challange" ]; then
+			mkdir /etc/ssl/acme/challange
+		fi
 	;;
 	watch)
 		consul watch -type=key -key=acme/domains $0 kill_client
