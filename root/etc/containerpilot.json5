@@ -31,7 +31,7 @@
 		},
 		{
 			name: "onChange-acme",
-			exec: ["/usr/bin/acme-manage", "watch-domains"],
+			exec: ["/usr/bin/acme-manage", "watch"],
 			when: { source: "nginx", once: "healthy" },
 			restarts: "unlimited"
 		},
