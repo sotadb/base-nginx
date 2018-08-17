@@ -51,8 +51,7 @@ http {
 		{{ end }}
 
 		location ^~ /.well-known/acme-challenge/ {
-			disable_symlinks off;
-			alias /var/www/acme/;
+			alias /acme/challange;
 		}
 		
 		location /nginx-health {
@@ -65,14 +64,14 @@ http {
 {{ if $acme_ready }}
 	server {
 		listen 443 ssl http2;
-		ssl_certificate /etc/ssl/acme/fullchain.pem;
-                ssl_certificate_key /etc/ssl/acme/key.pem;
+		ssl_certificate /acme/keys/fullchain.pem;
+                ssl_certificate_key /acme/keys/key.pem;
                 ssl_session_cache shared:SSL:10m;
                 ssl_protocols TLSv1.1 TLSv1.2;
 
 		ssl_ciphers '-ALL:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA:ECDHE-ECDSA-AES128-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384::DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA256';
 		ssl_prefer_server_ciphers on;
-		ssl_dhparam /etc/ssl/acme/dhparams.pem;
+		ssl_dhparam /acme/keys/dhparams.pem;
 		ssl_stapling on;
 		ssl_stapling_verify on;
 
@@ -90,8 +89,7 @@ http {
 		root /var/www/;
 		
 		location ^~ /.well-known/acme-challenge/ {
-			disable_symlinks off;
-			alias /var/www/acme/;
+			alias /acme/challange;
 		}
 
 		{{ if service "consul" }}
