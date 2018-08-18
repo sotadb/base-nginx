@@ -50,8 +50,9 @@ http {
 		return 301 https://$host$request_uri;
 		{{ end }}
 
-		location ^~ /.well-known/acme-challenge/ {
-			root /acme/challenge/;
+		location /.well-known/acme-challenge/ {
+			alias /acme/challenge/;
+			allow all;
 		}
 		
 		location /nginx-health {
@@ -88,8 +89,9 @@ http {
 		client_max_body_size 75M; 
 		root /var/www/;
 		
-		location ^~ /.well-known/acme-challenge/ {
-			root /acme/challenge/;
+		location /.well-known/acme-challenge/ {
+			alias /acme/challenge/;
+			allow all;
 		}
 
 		{{ if service "consul" }}
