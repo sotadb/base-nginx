@@ -7,7 +7,7 @@ case $1 in
 #consul lock doesn't seem to work with a shell function, so it must be independently called
 	do_client)
 		echo $$ > /var/run/acme.pid
-		if acme-client -enNOs -c /acme/keys/ -f /acme/keys/accnt.pem -k /acme/keys/key.pem -C /acme/challange $(consul kv get acme/domains); then
+		if acme-client -enNOs -c /acme/keys/ -f /acme/keys/accnt.pem -k /acme/keys/key.pem -C /acme/challenge $(consul kv get acme/domains); then
 			printf $(date +%s) > /acme/keys/configured
 		fi
 		sleep 13h &
@@ -24,8 +24,8 @@ case $1 in
 		if [ "${CONSUL_NAMES}" != "${NEW_NAMES}" ]; then
 			consul kv put acme/domains "${NEW_NAMES}"
 		fi
-		if [ ! -d "/acme/challange" ]; then
-			install -o nginx -g nginx -m 755 -d /acme/challange
+		if [ ! -d "/acme/challenge" ]; then
+			install -o nginx -g nginx -m 755 -d /acme/challenge
 		fi
 		if [ ! -d "/acme/keys" ]; then
 			install -o root -g root -m 700 -d /acme/keys

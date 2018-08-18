@@ -51,7 +51,7 @@ http {
 		{{ end }}
 
 		location ^~ /.well-known/acme-challenge/ {
-			alias /acme/challange/;
+			alias /acme/challenge/;
 		}
 		
 		location /nginx-health {
@@ -89,7 +89,7 @@ http {
 		root /var/www/;
 		
 		location ^~ /.well-known/acme-challenge/ {
-			alias /acme/challange/;
+			alias /acme/challenge/;
 		}
 
 		{{ if service "consul" }}
