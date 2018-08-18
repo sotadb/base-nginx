@@ -1,5 +1,5 @@
 
-{{ $acme_ready := file "/etc/ssl/acme/configured"|parseInt }}
+{{ $acme_ready := file "/acme/keys/configured"|parseInt }}
 user nginx;
 worker_processes 4;
 pid /var/run/nginx.pid;
