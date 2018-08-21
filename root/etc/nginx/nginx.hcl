@@ -51,7 +51,7 @@ http {
 		{{ end }}
 
 		location /.well-known/acme-challenge/ {
-			alias /acme/challenge/;
+			alias /var/www/acme/;
 			allow all;
 		}
 		
@@ -90,7 +90,7 @@ http {
 		root /var/www/;
 		
 		location /.well-known/acme-challenge/ {
-			alias /acme/challenge/;
+			alias /var/www/acme/;
 			allow all;
 		}
 

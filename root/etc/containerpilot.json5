@@ -17,6 +17,12 @@
 			when: { source: "consul-agent", once: "healthy" },
 		},
 		{
+			name: "challange-watch",
+			exec: ["/usr/bin/acme-manage", "challange"],
+			when: { source: "acme-init", once: "exitSuccess" },
+			restarts: "unlimited"
+		},
+		{
 			name: "nginx",
 			port: 80,
 			exec: ["/usr/bin/consul-template", "-exec", "/usr/sbin/nginx", "-template", "/etc/nginx/nginx.hcl:/etc/nginx/nginx.conf" ],

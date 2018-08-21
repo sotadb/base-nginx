@@ -46,8 +46,16 @@ case $1 in
 			kill $( cat /var/run/acme.pid )
 		fi
 	;;
+	challange)
+		inotifyd "$0 do_challange" /acme/challange:nd 
+	;;
+	do_challange)
+		rm /var/www/acme/*
+		cp acme/challange/* /var/www/acme/
+	;;
 	*)
 		echo "commands: init, client, watch"
 	;;
+
 esac
 
