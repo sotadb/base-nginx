@@ -46,12 +46,12 @@ case $1 in
 			kill $( cat /var/run/acme.pid )
 		fi
 	;;
-	challange)
-		inotifyd "$0 do_challange" /acme/challange:nd 
+	challenge)
+		inotifyd "$0 do_challenge" /acme/challenge:nd 
 	;;
-	do_challange)
+	do_challenge)
 		rm /var/www/acme/*
-		cp acme/challange/* /var/www/acme/
+		cp acme/challenge/* /var/www/acme/
 	;;
 	*)
 		echo "commands: init, client, watch"

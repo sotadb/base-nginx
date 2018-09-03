@@ -17,8 +17,8 @@
 			when: { source: "consul-agent", once: "healthy" },
 		},
 		{
-			name: "challange-watch",
-			exec: ["/usr/bin/acme-manage", "challange"],
+			name: "challenge-watch",
+			exec: ["/usr/bin/acme-manage", "challenge"],
 			when: { source: "acme-init", once: "exitSuccess" },
 			restarts: "unlimited"
 		},
