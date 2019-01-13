@@ -1,17 +1,12 @@
 # We use alpine as the base, with nginx as a web front-end
-FROM sotadb/containerpilot
+FROM alpine:3.5 
+ENV LANG en_US.UTF-8
+ARG PACKAGES="nginx"
+
 COPY root /
-ARG PACKAGES="nginx curl acme-client openssl"
 
 RUN apk --update add --no-cache $PACKAGES && \
- rm -rf /etc/ssl/acme && \
- rm -rf /etc/acme && \
  ln -sf /dev/stdout /var/log/nginx/access.log && \
  ln -sf /dev/stderr /var/log/nginx/error.log
 
-# This volume should be shared amongst nginx servers. It stores our keys 
-# and challanges.
-VOLUME ["/acme"]
-
-EXPOSE 80 443 
-
+CMD ["/usr/sbin/nginx", "-c", "/etc/nginx/nginx.conf"]

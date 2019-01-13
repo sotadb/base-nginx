@@ -1,16 +1,12 @@
-# nginx
+# base-nginx
 
-[![](https://images.microbadger.com/badges/image/sotadb/nginx.svg)](https://microbadger.com/images/sotadb/nginx "Get your own image badge on microbadger.com")
+[![](https://images.microbadger.com/badges/image/sotadb/base-nginx.svg)](https://microbadger.com/images/sotadb/base-nginx "Get your own image badge on microbadger.com")
 
 
-This is the self-configuring nginx container used by SotADB.info. It is 
-configured to serve HTTPS using auto-obtained keys from 
-[Let's Encrypt](https://letsencrypt.org/). It's an Alpine 3.5 image containing 
-the following:
+This is the stripped down nginx container used by SotADB.info for serving 
+static files. Because this is designed to operation behind Kubernetes' 
+ingress load balancer, it does not use HTTPS. It's an Alpine 3.5 image 
+containing the following:
 
- * Consul agent
- * Consul-template
- * ContainerPilot
  * nginx
- * acme-client
 
