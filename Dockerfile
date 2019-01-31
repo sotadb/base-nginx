@@ -9,5 +9,5 @@ RUN apk --update add --no-cache $PACKAGES && \
  rm -r /etc/nginx
 
 COPY root /
-
+EXPOSE 80 
 CMD ["/usr/sbin/nginx", "-c", "/etc/nginx/nginx.conf"]
